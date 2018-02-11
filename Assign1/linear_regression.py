@@ -1,12 +1,5 @@
 import numpy as np
 
-# Normalize the training examples
-# Returns normalized examples, mean vector and variance vector
-def normalize(X):
-	mean = X.mean(axis=0, keepdims=1)
-	sigma = X.std(axis=0, keepdims=1)
-	return ((X - mean) / sigma, mean[0], sigma[0])
-
 # Retuens hypothesis for m examples given training examples and theta
 # x0 column is not present in X
 def pred(X, theta):
@@ -24,7 +17,6 @@ def cost(X, y, theta):
 # Gradient for cost function J(X, y theta)
 # X assumed to have extra column for x0
 def gradient(X, y, theta):
-	m = X.shape[0]
 	return np.dot(X.T, X.dot(theta) - y)
 
 # Gradient descent
