@@ -20,22 +20,30 @@ def gradient(X, y, theta):
 	return np.dot(X.T, X.dot(theta) - y)
 
 # Gradient descent
+# Returns theta_min, number of iterations and all intermediate thetas and costs
 def linear_reg(X, y, init_theta, eta, epsilon):
 	m, n = X.shape
 	Xp = np.ones((m, n + 1))
 	Xp[:, 1:] = X
 	theta = np.array(init_theta)
+
+	# Store all intermediate thetas and costs
+	theta_history = [init_theta]
+	cost_history = [cost(Xp, y, theta)]
+
 	prev_error = 0.0
 	iterations = 0
 	while True:
 		theta = theta - eta * gradient(Xp, y, theta)
 		error = cost(Xp, y, theta)
-		if abs(error - prev_error) < epsilon:
+		theta_history.append(theta)
+		cost_history.append(error)
+		iterations += 1
+		if abs(error - prev_error) < epsilon or iterations >= 1000:
 			break
 		prev_error = error
-		iterations += 1
 
-	return theta, iterations
+	return theta, iterations, theta_history, cost_history
 
 # Normal equation method
 # W = Default[None] for unweighted parameters

@@ -33,9 +33,9 @@ def newton(X, y, init_theta, epsilon):
 	while True:
 		theta = theta - (np.linalg.pinv(hessian(Xp, y, theta)).dot(gradient(Xp, y, theta)))
 		val = likelihood(Xp, y, theta)
+		iterations += 1
 		if abs(val - prev_val) < epsilon:
 			break
 		prev_val = val
-		iterations += 1
 
 	return theta, iterations

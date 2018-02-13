@@ -30,7 +30,7 @@ dp.plot_close()
 dp.plot_training_data(X, y)
 
 #Analytical solution (with weights)
-tau = 1
+tau = 10
 
 y_test = rg.weighted_linear_reg(X, y, x_test.reshape(-1,1), tau)
 
