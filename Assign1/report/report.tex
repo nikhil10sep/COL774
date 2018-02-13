@@ -1,0 +1,264 @@
+\documentclass{article}
+\usepackage[margin = 2 cm]{geometry}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{multicol}
+\graphicspath{ {../images/} }
+\renewcommand{\thesubsection}{\thesection.\alph{subsection}}
+\title{COL774: Assignment 1}
+\author{Nikhil Goyal \\ \texttt{2015CS50287}}
+\begin{document}
+\maketitle
+\section{Linear Regression}
+\begin{small}
+\textit{Note: All results in this section are based on normalized training data}
+\end{small}
+\subsection{}
+\begin{flushleft}
+Learning rate ($\eta$) = 0.017
+\end{flushleft}
+\begin{flushleft}
+Stopping Criteria = $|J(\theta^{(t + 1)}) - J(\theta^{t})| < 1\times 10^{-10}$ or iterations $ \geq 1000$
+\end{flushleft}
+\begin{flushleft}
+$\theta = 
+\begin{bmatrix}
+0.99661881 \\
+0.00134019
+\end{bmatrix}$
+Number of iterations = 38
+\end{flushleft}
+\subsection{}
+\begin{figure}[H]
+\centering
+\includegraphics[scale = 0.75]{linear.png}
+\caption{Wine Density vs Wine Acidity}
+\end{figure}
+
+\subsection{}
+\begin{figure}[H]
+\centering
+\includegraphics[scale = 0.5]{linear_surface.png}
+\caption{Path taken by gradient descent on surface plot of $J(\theta)$}
+\end{figure}
+
+\subsection{}
+\begin{figure}[H]
+\centering
+\includegraphics[scale = 0.5]{linear_contour.png}
+\caption{Path taken by gradient descent on contour plot of $J(\theta)$}
+\end{figure}
+
+\subsection{}
+\begin{figure}[H]
+\centering
+\includegraphics[scale = 0.75]{cost_iters.png}
+\caption{$J(\theta)$ vs iterations for various $\eta$}
+\end{figure}
+\begin{flushleft}
+Gradient descent diverges for $\eta = 0.021$ and $\eta = 0.025$. With a small learning rate, we find that gradient descent takes a very long time to converge to the optimal value. Conversely, with a large learning rate, gradient descent might not converge or might even diverge.
+\end{flushleft}
+
+\section{Locally Weighted Linear Regression}
+\subsection{}
+$\theta = 
+\begin{bmatrix}
+0.32767322 \\
+0.17531247
+\end{bmatrix}$
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale = 0.75]{linear2.png}
+\caption{Linear Regression}
+\end{figure}
+
+\subsection{}
+\begin{flushleft}
+In locally weighted linear regression $$\theta = (X^{T}WX)^{-1}X^{T}WY $$
+\end{flushleft}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale = 0.75]{linear2_tau_0_8.png}
+\caption{Locally Weighted Linear Regression ($\tau = 0.8$)}
+\end{figure}
+\pagebreak
+
+\subsection{}
+\begin{multicols}{2}
+\begin{figure}[H]
+\centering
+\includegraphics[scale = 0.4]{linear2_tau_0_1.png}
+\caption{$\tau = 0.1$}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale = 0.4]{linear2_tau_0_3.png}
+\caption{$\tau = 0.3$}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale = 0.4]{linear2_tau_2.png}
+\caption{$\tau = 2$}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale = 0.4]{linear2_tau_10.png}
+\caption{$\tau = 10$}
+\end{figure}
+\end{multicols}
+
+\begin{flushleft}
+$\tau = 0.8$ works the best as it caputures the data structure correctly and generalizes it well.
+\end{flushleft}
+\begin{flushleft}
+When $\tau$ goes to zero, the curve becomes more and more like a perfect polynomial fitting all points correctly. Conversely, when $\tau$ is very large, hyothesis become almost same as that of (un-weighted) linear regression.
+\end{flushleft}
+
+\section{Logistic Regression}
+\begin{small}
+\textit{Note: All results in this section are based on normalized training data}
+\end{small}
+\subsection{}
+$\theta = 
+\begin{bmatrix}
+0.40125316 \\
+2.5885477 \\
+-2.72558849
+\end{bmatrix}$
+Number of iterations = 8
+
+\subsection{}
+\begin{figure}[H]
+\centering
+\includegraphics[scale = 0.75]{log_linear.png}
+\caption{Linear decision boundary for Logistic regression}
+\end{figure}
+
+\section{Gaussian Discrimant Analysis}
+\subsection{}
+\begin{flushleft}
+$\phi = 0.5$
+\end{flushleft}
+
+\begin{flushleft}
+$\mu_{0} =
+\begin{bmatrix}
+98.38 \\ 
+429.66
+\end{bmatrix}$
+\end{flushleft}
+
+\begin{flushleft}
+$\mu_{1} =
+\begin{bmatrix}
+137.46 \\
+366.62
+\end{bmatrix}$
+\end{flushleft}
+
+\begin{flushleft}
+$\Sigma_{0} = \Sigma_{1} = \Sigma =
+\begin{bmatrix}
+287.482 & 26.748 \\
+-26.748 & 1123.25
+\end{bmatrix}$
+\end{flushleft}
+
+\subsection{}
+\begin{figure}[H]
+\centering
+\includegraphics[scale = 0.75]{gda_linear.png}
+\caption{GDA decision boundary when $\Sigma_{0} = \Sigma_{1}$}
+\end{figure}
+
+\subsection{}
+\begin{flushleft}
+Decision boundary is linear when $\Sigma_{0} = \Sigma_{1}$ and the equations is given by
+$$2(\mu_{0}-\mu_{1})^{T}\Sigma^{-1}x + \mu_{1}^{T}\Sigma^{-1}\mu_{1} - \mu_{0}^{T}\Sigma^{-1}\mu_{0} - 2log(\frac{\phi}{1 - \phi}) = 0$$
+Or in other form as
+$$\theta^{T}x^{\prime} = 0, \quad where$$
+$$\theta = 
+\begin{bmatrix}
+\frac{-1}{2}(\mu_{1}^{T}\Sigma^{-1}\mu_{1} - \mu_{0}^{T}\Sigma^{-1}\mu_{0}) -  log(\frac{1 - \phi}{\phi})\\
+\Sigma^{-1}(\mu_{0}-\mu_{1})
+\end{bmatrix}$$
+$$x^{\prime} =
+\begin{bmatrix}
+1\\
+x
+\end{bmatrix} 
+$$
+\end{flushleft}
+
+\subsection{}
+\begin{flushleft}
+$\phi = 0.5$
+\end{flushleft}
+
+\begin{flushleft}
+$\mu_{0} =
+\begin{bmatrix}
+98.38 \\ 
+429.66
+\end{bmatrix}$
+\end{flushleft}
+
+\begin{flushleft}
+$\mu_{1} =
+\begin{bmatrix}
+137.46 \\
+366.62
+\end{bmatrix}$
+\end{flushleft}
+
+\begin{flushleft}
+$\Sigma_{0} = 
+\begin{bmatrix}
+255.3956 & -184.3308\\
+-184.3308 & 1371.1044
+\end{bmatrix}$
+\end{flushleft}
+
+\begin{flushleft}
+$\Sigma_{1} = 
+\begin{bmatrix}
+319.5684 & 130.8348\\
+130.8348 & 875.3956
+
+\end{bmatrix}$
+\end{flushleft}
+
+\subsection{}
+\begin{flushleft}
+Decision boundary is general case is given by
+$$x^{T}(\Sigma_{1}^{-1} - \Sigma_{0}^{-1})x -2(\mu_{1}^{T}\Sigma_{1}^{-1}-\mu_{0}^{T}\Sigma_{0}^{-1})x + \mu_{1}^{T}\Sigma_{1}^{-1}\mu_{1} - \mu_{0}^{T}\Sigma_{0}^{-1}\mu_{0} - 2log(\frac{\phi}{1 - \phi}) + log(\frac{|\Sigma_{1}|}{|\Sigma_{0}|})= 0$$
+which can be written as
+$$x^{T}Ax + B^{T}x + C = 0, \quad where$$
+$$A = \Sigma_{1}^{-1} - \Sigma_{0}^{-1}$$
+$$B = -2(\Sigma_{1}^{-1}\mu_{1} - \Sigma_{0}^{-1}\mu_{0})$$
+$$C = \mu_{1}^{T}\Sigma_{1}^{-1}\mu_{1} - \mu_{0}^{T}\Sigma_{0}^{-1}\mu_{0} - 2log(\frac{\phi}{1 - \phi}) + log(\frac{|\Sigma_{1}|}{|\Sigma_{0}|})$$
+\end{flushleft}
+\begin{figure}[H]
+\centering
+\includegraphics[scale = 0.75]{gda_quad.png}
+\caption{GDA decision boundary in general setting}
+\end{figure}
+
+\subsection{}
+\begin{flushleft}
+From the quadratic equation written above we have in our case 
+$$ A = 
+\begin{bmatrix}
+-5.8321 & -4.9822 \\
+-4.9822 & 12.1672
+\end{bmatrix} \times 10^{-4}$$
+The conic is degenerate and $A_{10}A_{01} - A_{00}A_{11} =  9.57836\times 10^{-7} > 0$, so the quadratic boundary obtained is a hyperbola. The mirror curve of hyperbola is just a mathematical artifact and has no relation to the classification boundary. The hyperbola does a better job in classification as we can see from the graph. This is due to the fact general GDA works with weaker assumptions than the case when GDA is applied with $\Sigma_{0} = \Sigma_{1}$.
+\end{flushleft}
+
+\end{document}
