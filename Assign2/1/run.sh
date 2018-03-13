@@ -7,11 +7,11 @@ then
 		python3 predict_naive_bayes.py $3 models/nb1.model $4
 	elif [ $2 -eq 2 ]
 	then
-		python3.4 process.py $3 $3.stopstem 1
+		python3 process.py $3 $3.stopstem 1
 		python3 predict_naive_bayes.py $3.stopstem models/nb2.model $4
 	elif [ $2 -eq 3 ]
 	then
-		python3.4 process.py $3 $3.stop 0
+		python3 process.py $3 $3.stop 0
 		python3 predict_naive_bayes.py $3.stop models/nb3.model $4
 	else
 		echo Unknown option 2
