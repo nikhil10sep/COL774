@@ -1,0 +1,443 @@
+\documentclass{article}
+\usepackage[margin = 2.0 cm]{geometry}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{enumerate}
+\usepackage{float}
+\usepackage{multicol}
+\graphicspath{ {../images/} }
+\renewcommand{\thesubsection}{\thesection.\alph{subsection}}
+\title{COL774: Assignment 3}
+\author{Nikhil Goyal \\ \texttt{2015CS50287}}
+\date{}
+\begin{document}
+\maketitle
+
+\section{Decision Trees (and Random Forests)}
+\subsection{Decision Tree with static binarising of numerical attributes}
+\begin{itemize}
+  \item Results
+  \begin{itemize}
+    \item No. of nodes in decision tree = 7913
+    \item Training Accuracy = 88.934\%
+    \item Validation Accuracy =  79.934\%
+    \item Test Accuracy = 80.686\%
+  \end{itemize}
+
+  \item Observations
+  \begin{itemize}
+    \item Predictably, the accuracy of the tree over training examples increases monotonically as the tree in grown. However accuracy over independent examples(valid and test) first increases then decreases.
+    \item Random errors or noise in training data lead to overfitting and after a certain limit lead to poor valid and test accuracies.
+    \item Sometimes coincidental regularities (some attribute happens to partition the examples very well, despite being unrelated to actual target function) can cause overfitting of the train data.
+  \end{itemize}
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\noindent \includegraphics[scale = 0.7]{acc.png}
+\caption{Accuracy vs No. of nodes for 1.a}
+\end{figure}
+
+\subsection{Post-pruning of Decision Tree in 1.a}
+
+\begin{itemize}
+  \item Results
+  \begin{itemize}
+    \item No. of nodes in decision tree = 3509
+    \item Training Accuracy = 85.418\%
+    \item Validation Accuracy =  84.200\%
+    \item Test Accuracy = 82.171\%
+  \end{itemize}
+
+  \item Observations
+  \begin{itemize}
+    \item The accuracy of the tree over test and valid examples increases and training accuracy decreases as the tree is pruned.
+    \item During pruning any leaf node added due to coincidental regularities or noise in training set is likely to be pruned because these same coincidences and same noise distribution are unlikely to occur in validation set.
+  \end{itemize}
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\noindent \includegraphics[scale = 0.7]{acc_prune.png}
+\caption{Accuracy vs No. of nodes for 1.a (Post-pruning)}
+\end{figure}
+
+
+\subsection{Decision Tree with dynamic binarising of numerical attributes}
+
+\begin{itemize}
+  \item Results
+  \begin{itemize}
+    \item No. of nodes in decision tree = 13982
+    \item Training Accuracy = 99.100\%
+    \item Validation Accuracy =  78.534\%
+    \item Test Accuracy = 78.771\%
+    \item Thresholds of Numerical Attributes:
+          \begin{table}[H]
+            \centering
+            \begin{tabular}{c|c|c}
+              \textbf{Attribute} & \textbf{Max. Repetition} & \textbf{Thresholds}\\
+              \hline
+              Age & 7 & 40.0, 34.0, 31.0, 29.0, 28.0, 25.5, 26.5\\
+              Fnlwgt & 6 & 180195.0, 224889.0, 265662.0, 312832.0, 394927.0, 845954.5\\
+              Education Number & 0 & -\\
+              Capital Gain & 5 & 0.0, 9995.5, 7298.0, 4064.0, 3464.0\\
+              Capital Loss & 2 & 0.0, 2258.0\\
+              Hours per week & 5 & 40.0, 46.0, 45.0, 44.0
+            \end{tabular}
+            \caption{Numerical attributes which are
+            split multiple times in a branch}
+          \end{table}
+  \end{itemize}
+
+  \item Observations
+  \begin{itemize}
+    \item The numerical attributes are used multiple times on a single path the same can be seen from the above table. Hence, the training data is split multiple times with respect to continuous dimensions which divides the data into more regions and help to classify the examples more accurately. This examples more than 99\% accuracy on training data.
+    \item However distribution of valid and test data on each node is not the same as for train data. That's why it performs poorly on valid and test data.
+    \item In its present form this model performs poorly than the decision tree trained in part 1a.
+  \end{itemize}
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\noindent \includegraphics[scale = 0.7]{acc2c.png}
+\caption{Accuracy vs No. of nodes (Dynamic Binarising)}
+\end{figure}
+
+\subsection{Scikit-learn Decision Tree}
+
+\begin{itemize}
+  \item Best Parameters
+  \begin{itemize}
+    \item Criterion = entropy
+    \item Max. depth = 12
+    \item Min Samples split = 0.0014
+    \item Min Samples leaf = 0.0001
+  \end{itemize}
+
+  \item Results
+  \begin{itemize}
+    \item Training Accuracy = 86.637\%
+    \item Validation Accuracy =  85.434\%
+    \item Test Accuracy = 84.557\%
+  \end{itemize}
+
+  \item Observations
+  \begin{itemize}
+    \item As the Max. depth increases the decision tree learns the train data better. After a certain limit tree starts to overfit the data and can be seen from the graph.
+    \item Minimum sample split controls the depth indirectly by stopping the tree growth if the number of training samples at a node drop below a limit. So lower the min. sample split, deeper the graph is and hence more is the training accuracy. Similar logic applies for the minimum leaf samples too
+    \item In this approach we stop growing the tree earlier, before it reaches the point where it perfectly classifies the training data. The difficulty in this approach is of estimating precisely when to stop growing the tree.
+    \item Best parameters in this case give slightly better performance compared to model in Part 1b.
+  \end{itemize}
+\end{itemize}
+
+\begin{multicols}{2}
+  \begin{figure}[H]
+    \centering
+    \includegraphics[scale = 0.40]{dtree_depth_cont.png}
+    \caption{Accuracy vs Max. Depth (Continuous)}
+  \end{figure}
+
+  \begin{figure}[H]
+    \centering
+    \includegraphics[scale = 0.40]{dtree_split_cont.png}
+    \caption{Accuracy vs Min. Sample split (Continuous)}
+  \end{figure}
+
+  \begin{figure}[H]
+    \centering
+    \includegraphics[scale = 0.40]{dtree_leaf_cont.png}
+    \caption{Accuracy vs Min. Leaf samples (Continuous)}
+  \end{figure}
+
+
+  \begin{figure}[H]
+    \centering
+    \includegraphics[scale = 0.40]{dtree_depth_dis.png}
+    \caption{Accuracy vs Max. Depth (Discrete)}
+  \end{figure}
+
+
+  \begin{figure}[H]
+    \centering
+    \includegraphics[scale = 0.40]{dtree_split_dis.png}
+    \caption{Accuracy vs Min. Sample split (Discrete)}
+  \end{figure}
+
+  \begin{figure}[H]
+    \centering
+    \includegraphics[scale = 0.40]{dtree_leaf_dis.png}
+    \caption{Accuracy vs Min. Leaf samples (Discrete)}
+  \end{figure}
+\end{multicols}
+
+\subsection{Scikit-learn Random Forest}
+
+\begin{itemize}
+  \item Best Parameters
+  \begin{itemize}
+    \item Criterion = entropy
+    \item No. estimators = 30
+    \item Max. no. of features = 7
+    \item Max. depth = 30
+    \item Min Samples split = 0.0007
+    \item Min Samples leaf = 0.0001
+  \end{itemize}
+
+  \item Results
+  \begin{itemize}
+    \item Training Accuracy = 91.215\%
+    \item Validation Accuracy =  85.700\%
+    \item Test Accuracy = 85.800\%
+  \end{itemize}
+
+  \item Observations
+  \begin{itemize}
+    \item Predictably, the performance of the random forest increases with the number of decision trees as it removes the noise and coincidental regularities in the model.
+    \item Max feature does not make a significant change to the performance. This is due to the fact that search for a split does not stop until at least one valid partition of the node samples is found, even if it requires to effectively inspect more than max\_features features.
+    \item With bootstrap samples are drawn with replacement and lead to slightly better valid and test accuracies.
+    \item Optimum parameters in this case lead better results than all of the previous models. Multiple tree (Bagging) and bootstrapping reduces high variance in the model leading to model which generalizes very well.
+  \end{itemize}
+\end{itemize}
+
+\pagebreak
+
+\begin{multicols}{2}
+  \begin{figure}[H]
+    \centering
+    \includegraphics[scale = 0.40]{forest_est_true.png}
+    \caption{Accuracy vs No. of estimators (with Bootstrap)}
+  \end{figure}
+
+  \begin{figure}[H]
+    \centering
+    \includegraphics[scale = 0.40]{forest_fet_true.png}
+    \caption{Accuracy vs Max. no. of attributes (with bootstrap)}
+  \end{figure}
+
+  \begin{figure}[H]
+    \centering
+    \includegraphics[scale = 0.40]{forest_est_false.png}
+    \caption{Accuracy vs No. of estimators (without Bootstrap)}
+  \end{figure}
+
+
+  \begin{figure}[H]
+    \centering
+    \includegraphics[scale = 0.40]{forest_fet_false.png}
+    \caption{Accuracy vs Max. no. of attributes (without bootstrap)}
+  \end{figure}
+\end{multicols}
+
+\pagebreak
+
+\section{Neural Networks}
+
+\subsection{Generic Implementation}
+Neural network architecture given by list of sizes of each hidden layer
+
+\subsection{Toy example}
+
+\begin{enumerate}[i]
+  \item Logistic Regression
+  \begin{itemize}
+    \item Results
+      \begin{itemize}
+      \item Training accuracy = 45.789\%
+      \item Test accuracy = 38.334\%
+    \end{itemize}
+
+    \item Decision Boundary Visualization
+    \begin{multicols}{2}
+      \begin{figure}[H]
+        \centering
+        \includegraphics[scale = 0.4]{logreg_train.png}
+        \caption{Training Data}
+      \end{figure}
+
+      \begin{figure}[H]
+        \centering
+        \includegraphics[scale = 0.4]{logreg_test.png}
+        \caption{Test Data}
+      \end{figure}
+    \end{multicols}
+
+  \end{itemize}
+
+  \item Neural network - Single hidden layer having 5 units
+  \begin{itemize}
+    \item Results
+    \begin{itemize}
+      \item Training accuracy = 90.263\%
+      \item Test accuracy = 85.000\%
+    \end{itemize}
+
+    \item Decision Boundary Visualization
+      \begin{multicols}{2}
+        \begin{figure}[H]
+          \centering
+          \includegraphics[scale = 0.4]{neural_train.png}
+          \caption{Training Data}
+        \end{figure}
+
+        \begin{figure}[H]
+          \centering
+          \includegraphics[scale = 0.4]{neural_test.png}
+          \caption{Test Data}
+        \end{figure}
+      \end{multicols}
+
+    \item Observations
+      \begin{itemize}
+        \item As we can see from the images the data is not linearly separable. Hence logistic regression does a poor job in classifying the data.
+        \item Neural network divides the data into multiple regions and learns the pattern to good extent and the same can be concluded from the accuracies.
+      \end{itemize}
+  \end{itemize}
+
+  \item Neural network - Single hidden layer having variable units
+  \begin{itemize}
+    \item Results
+      \begin{table}[H]
+              \centering
+              \begin{tabular}{c|c|c}
+                \textbf{No. of units} & \textbf{Training Accuracy} & \textbf{Test Accuracy}\\
+                \hline
+                1 & 64.736 & 58.334\\
+                2 & 63.947 & 60.000\\
+                3 & 90.263 & 85.833\\
+                5 & 90.263 & 85.000\\
+                10 & 91.315 & 85.000\\
+                20 & 93.684 & 81.667\\
+                40 & 93.894 & 81.000\\
+              \end{tabular}
+              \caption{Training and test accuracy for varying number of hidden units}
+      \end{table}
+
+    \item Decision Boundary Visualization
+      \begin{multicols}{2}
+        \begin{figure}[H]
+          \centering
+          \includegraphics[scale = 0.4]{neural_1.png}
+          \caption{Hidden units = 1}
+        \end{figure}
+        
+        \begin{figure}[H]
+          \centering
+          \includegraphics[scale = 0.4]{neural_3.png}
+          \caption{Hidden units = 3}
+        \end{figure}
+
+        \begin{figure}[H]
+          \centering
+          \includegraphics[scale = 0.4]{neural_20.png}
+          \caption{Hidden units = 20}
+        \end{figure}
+
+
+        \begin{figure}[H]
+          \centering
+          \includegraphics[scale = 0.4]{neural_2.png}
+          \caption{Hidden units = 2}
+        \end{figure}
+
+        \begin{figure}[H]
+          \centering
+          \includegraphics[scale = 0.4]{neural_10.png}
+          \caption{Hidden units = 10}
+        \end{figure}
+
+
+        \begin{figure}[H]
+          \centering
+          \includegraphics[scale = 0.4]{neural_40.png}
+          \caption{Hidden units = 40}
+        \end{figure}
+      \end{multicols}
+    \item Observations
+      \begin{itemize}
+       \item Decision boundary becomes more complex as the number of hidden units are increased. As the size of hidden layer increase neural network fits the train data better but after certain limit the model starts to overfit the data and fails to generalize well.
+        \item From the table we can see that the optimal size of hidden layer is 3.
+      \end{itemize}
+  \end{itemize}
+
+  \item Neural network - Two hidden layers having each with 5 units
+  \begin{itemize}
+    \item Results
+    \begin{itemize}
+      \item Training accuracy = 90.789\%
+      \item Test accuracy = 87.5\%
+    \end{itemize}
+
+    \item Decision Boundary Visualization
+      \begin{figure}[H]
+        \centering
+        \includegraphics[scale = 0.4]{neural_5_5.png}
+        \caption{Training Data}
+      \end{figure}
+
+    \item Observations
+      \begin{itemize}
+        \item In a single layer it's very easy to overfit by just adding locally correct segments. Multiple layers introduce more activation functions, features that it produces at mid-network are “less linear” with respect to the inputs and, ideally, “more linear” with respect to the desired output. With more layers, there is a good possibility to get a smoother transition from inputs to outputs, improving generalization and reducing overfitting. This is supported by the result that highest test accuracy is obtained in 2 hidden layer network.
+        \item 
+      \end{itemize}
+  \end{itemize}
+\end{enumerate}
+
+\subsection{Working with MNIST}
+
+\begin{enumerate}[i]
+  \item LIBSVM and Neural Network - Linear Classification
+  \begin{itemize}
+    \item LIBSVM - Results
+    \begin{itemize}
+      \item Training Accuracy = 99.870\%
+      \item Test Accuracy = 98.805\%
+    \end{itemize}
+
+    \item Neural Network (Single Perceptron) - Results
+    \begin{itemize}
+      \item Training Accuracy = 99.080\%
+      \item Test Accuracy = 98.917\%
+    \end{itemize}
+
+    \item Observations
+    \begin{itemize}
+      \item Almost 99\% training and test accuracy in linear kernel SVM signify that the data is linearly separable. 
+      \item Neural network with single perceptron degenerates to logistic regression. As the data is linearly separable it also perform almost equally well on the given dataset.
+    \end{itemize}
+  \end{itemize}
+
+  \item Neural Network - Variable eta
+  \begin{itemize}
+    \item Stopping criteria
+    \begin{itemize}
+      \item $\frac{\sum_{i=iters - k}^{iters - 1}|J(\theta)^{i + 1} - J(\theta)^{i}|}{k} \leq \epsilon$
+      \item $iters \leq max\_iters$
+      \item $\epsilon = 1\times 10^{-3}$
+      \item $k = 100$
+    \end{itemize}
+    \item Results
+    \begin{itemize}
+      \item Training Accuracy = 99.090\%
+      \item Test Accuracy = 98.945\%
+    \end{itemize}
+    \item Observations
+    \begin{itemize}
+      \item The neural network learns a more complex non linear boundary in this case. As the data is linearly separable this does not help and lead to slightly reduced train and test accuracies.
+    \end{itemize}
+  \end{itemize}
+
+  \item Neural Network - ReLU activation function
+  \begin{itemize}
+    \item Results
+    \begin{itemize}
+      \item Training Accuracy = 98.330\%
+      \item Test Accuracy = 98.194\%
+    \end{itemize}
+    \item Observations
+    \begin{itemize}
+      \item ReLu converges to the near optimum in less time compared to sigmoid activation function. Also each iteration of ReLU is fast in comparison to sigmoid. However both give similar results on this dataset.
+    \end{itemize}
+  \end{itemize}
+\end{enumerate}
+\end{document}
