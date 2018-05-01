@@ -1,0 +1,214 @@
+\documentclass{article}
+\usepackage[margin = 2.0 cm]{geometry}
+\usepackage[lofdepth,lotdepth]{subfig}
+\usepackage{graphicx}
+\usepackage{enumerate}
+\usepackage{float}
+\usepackage{multicol}
+\usepackage{hyperref}
+
+\graphicspath{ {../images/} }
+\renewcommand{\thesubsection}{\thesection.\alph{subsection}}
+\title{COL774: Assignment 4}
+\author{Nikhil Goyal \\ \texttt{2015CS50287}}
+\date{}
+\begin{document}
+\maketitle
+
+\section{Part 1: Fixed Algorithms}
+\subsection{K-Means}
+\begin{itemize}
+  \item Results
+  \begin{itemize}
+    \item Training Accuracy = 36.905\%
+    \item Test Accuracy = 36.607\%
+  \end{itemize}
+
+  \item Observations
+  \begin{itemize}
+    \item K-Means converges after about 20 iterations. After this only slight variance occurs in train and test accuracies.
+    \item Clusters do not form a 1-1 mapping with labels as the data is not separable into 20 clusters in linear space.
+  \end{itemize}
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\noindent \includegraphics[scale = 0.3]{kmeans.png}
+\caption{Accuracy vs No. of iterations (K-Means)}
+\end{figure}
+
+\subsection{PCA + SVM}
+
+\begin{itemize}
+  \item Best Parameters
+  \begin{itemize}
+    \item C = 0.1
+  \end{itemize}
+  
+  \item Results
+  \begin{itemize}
+    \item Training Accuracy = 78.180\%
+    \item Test Accuracy = 65.455\%
+  \end{itemize}
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\noindent \includegraphics[scale = 0.3]{svm.png}
+\caption{Cross - validation accuracy vs C value (SVM)}
+\end{figure}
+
+\subsection{Neural Network}
+
+\begin{itemize}
+  \item Best Parameters
+  \begin{itemize}
+    \item No. of hidden units = 1000
+  \end{itemize}
+
+  \item Results
+  \begin{itemize}
+    \item Training Accuracy = 97.168\%
+    \item Test Accuracy = 80.392\%
+  \end{itemize}
+
+  \item Observations
+  \begin{itemize}
+    \item Validation accuracy increases with number of hidden units initially. After a certain limit it plateaus and starts to decrease as the neural network starts to overfit the data.
+  \end{itemize}
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\noindent \includegraphics[scale = 0.3]{nn.png}
+\caption{Cross - validation accuracy vs No. of hidden units (Neural Net)}
+\end{figure}
+
+\subsection{Convolutional Neural Network}
+
+\begin{itemize}
+  \item Best Parameters
+  \begin{itemize}
+    \item No. of hidden units = 500
+    \item Kernel size = $5 \times 5$
+    \item No. of Kernels = 64
+  \end{itemize}
+
+  \item Results
+  \begin{itemize}
+    \item Training Accuracy = 94.772\%
+    \item Test Accuracy = 86.692\%
+  \end{itemize}
+
+  \item Observations
+  \begin{itemize}
+    \item A small kernel size of 2 captures very fine details but is unable to store information of higher level details like raw strokes which form the drawing, resulting in low validation accuracies. Also kernel size of 7 generally doesn't fare well as it ignores at lot of details.
+    \item Validation accuracy increases with number of hidden units initially. After a certain limit it plateaus and starts to decrease as the neural network starts to overfit the data.
+  \end{itemize}
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\noindent \includegraphics[scale = 0.3]{cnn_best.png}
+\caption{Best Cross - validation accuracy vs No. of hidden units (CNN))}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \subfloat[][20 Hidden units]{
+  \includegraphics[width=0.48\textwidth]{cnn_20.png}}
+  % \qquad
+  \subfloat[][50 Hidden units]{
+  \includegraphics[width=0.48\textwidth]{cnn_50.png}}
+  
+  \subfloat[][100 Hidden units]{
+  \includegraphics[width=0.48\textwidth]{cnn_100.png}}
+  % \qquad
+  \subfloat[][200 Hidden units]{
+  \includegraphics[width=0.48\textwidth]{cnn_200.png}}
+
+  \subfloat[][500 Hidden units]{
+  \includegraphics[width=0.48\textwidth]{cnn_500.png}}
+  % \qquad
+  \subfloat[][1000 Hidden units]{
+  \includegraphics[width=0.48\textwidth]{cnn_1000.png}}
+
+  \caption{Cross - validation accuracy for different Kernel sizes and no. of Kernels (CNN)}
+\end{figure}
+
+\subsection{Comparison}
+
+\begin{itemize}
+  \item Observations
+  \begin{itemize}
+    \item K-means is an unsupervised learning algorithm which probably won't give great results for image classification. The classes it creates will likely mix similar objects like, create multiple classes for the same object drawn in different styles, and ignore other objects completely. 
+    \item PCA decreases the noise in the data and reduces computation. It does well than K-means as it leverages the information of truth label for each data point. The data is not separable in linear space so accuracy is not considerably good.
+    \item Neural network learns the training data very well and does good on test data as it can fit very complex non linear boundaries.
+    \item Convolutional Neural Network performs the best among all four algorithms. CNN's exploit the fact that features show spatial locality in images. Convolving multiple kernels with the image extract useful features which are absent when each pixel is considered as separate independent entity.
+  \end{itemize}
+\end{itemize}
+
+\section{Competition}
+
+\begin{itemize}
+  \item Libraries used
+    \begin{itemize}
+      \item Keras-gpu
+      \item Tensorflow-gpu
+    \end{itemize}
+
+  \item Preprocessing
+    \begin{itemize}
+      \item Randomly flipping the images horizontally
+    \end{itemize}
+
+  \item Results
+    \begin{itemize}
+      \item Train Accuracy = 96.173\%
+      \item Test Accuracy = 93.693\%
+    \end{itemize}
+
+  \item Architecture
+  \begin{table}[H]
+    \centering
+    \begin{tabular}{c|c|c|c}
+      \textbf{Layer} & \textbf{Description} & \textbf{Activation} & \textbf{Output Shape}\\
+      \hline
+      Conv2D & 64 - (3 x 3 x 1) Kernels & ReLU & (28, 28, 64)\\
+      Batch Normalization & NA & NA &(28, 28, 64)\\
+      Conv2D & 64 - (3 x 3 x 64) Kernels & ReLU & (28, 28, 64)\\
+      Batch Normalization & NA & NA &(28, 28, 64)\\
+      Max Pooling & Pool size - (2 x 2) & NA & (14, 14, 64)\\
+      Conv2D & 96 - (3 x 3 x 64) Kernels & ReLU & (14, 14, 96)\\
+      Batch Normalization & NA & NA & (14, 14, 96)\\
+      Conv2D & 96 - (3 x 3 x 96) Kernels & ReLU & (14, 14, 96)\\
+      Batch Normalization & NA & NA &(14, 14, 96)\\
+      Max Pooling & Pool size - (2 x 2) & NA & (7, 7, 96)\\
+      Conv2D & 128 - (3 x 3 x 96) Kernels & ReLU & (7, 7, 128)\\
+      Batch Normalization & NA & NA &(7, 7, 128)\\
+      Conv2D & 128 - (3 x 3 x 128) Kernels & ReLU & (7, 7, 128)\\
+      Batch Normalization & NA & NA & (7, 7, 128)\\
+      Max Pooling & Pool size - (2 x 2) & NA & (4, 4, 128)\\
+      Dropout & Drop probability = 0.2 & NA & (4, 4, 128)\\
+      Flatten & NA & NA &(2048)\\
+      Dense & NA & ReLU & (1024)\\
+      Dropout & Drop probability = 0.2 & NA & (1024)\\
+      Dense & NA & Softmax & (20)\\
+    \end{tabular}
+    \caption{Deep CNN Architecture}
+  \end{table}
+  \item Other Details
+  \begin{itemize}
+    \item Kernel initializer : Glurot Uniform
+    \item Max Pooling padding : Zero padding
+  \end{itemize}
+  \item Hyper-parameters
+  \begin{itemize}
+    \item Batch size = 100
+    \item Epochs = 12
+    \item Loss function = Negative Log-Likelihood
+    \item Optimizer = Adam
+  \end{itemize}
+  \item \href{https://drive.google.com/open?id=173B5457Xab0EBRIWnBuYx4-vRmJe8qPh}{Link to model}
+\end{itemize}
+\end{document}
